@@ -28,4 +28,4 @@ recommendations = get_recommendations(5, scores)
 for r in recommendations["ingredients"]:
     print(r)
 
-#print(scores)
+print(recommendations)
