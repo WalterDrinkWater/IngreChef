@@ -25,7 +25,4 @@ cos_sim = map(lambda x: cosine_similarity(input_embedding, x)[0][0], doc_vec)
 scores = list(cos_sim)
 recommendations = get_recommendations(5, scores)
 
-for r in recommendations["ingredients"]:
-    print(r)
-
 print(recommendations)
