@@ -1,0 +1,103 @@
+{%extends "template.html"%}
+
+{% block title %}About US{% endblock %}
+
+{% block content %}
+        <ul class="nav nav-tabs w-100" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" style="padding-left: 25px!important; padding-right: 25px!important;"
+                    id="aboutUs-tab" data-bs-toggle="tab" data-bs-target="#aboutUs" type="button" role="tab"
+                    aria-controls="aboutUs" aria-selected="true">About Us</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" style="padding-left: 25px!important; padding-right: 25px!important;"
+                    id="campuses-tab" data-bs-toggle="tab" data-bs-target="#campuses" type="button" role="tab"
+                    aria-controls="campuses" aria-selected="true">Campuses</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" style="padding-left: 25px!important; padding-right: 25px!important;"
+                    id="academicians-tab" data-bs-toggle="tab" data-bs-target="#academicians" type="button" role="tab"
+                    aria-controls="academicians" aria-selected="true">FOCS Academicians</button>
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade show active" id="aboutUs" role="tabpanel" aria-labelledby="aboutUs-tab">
+                <div class="fs-2 fw-bold text-center mb-2">About Us</div>
+                <div class="card mb-4" style="width:100%">
+                    <div class="card-header">
+                        <h2 class="card-title">Dean of FOCS</h2>
+                    </div>
+                    <div class="card-body row">
+                        <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                            <img src="./static/media/dean.jpg" class="card-img-top" alt="pic" style="width: 60%;">
+                        </div>
+                        <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                            <div>
+                                <h1>Ts. Lim Shen Huoy</h1>
+                                    <p class="card-text">
+                                        DipIT (PTPL), BSc (Hons) (Staffs), ExecDipMgt, MCompSc (Mal), P.Tech.
+                                    </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mb-3">
+                    <h2>Welcome to the Faculty of Computing and Information Technology</h2>
+                    <h3>"Pathway to a Rewarding Career in Computing and IT World"</h3>
+                </div>
+                <div class="mb-3">
+                    <span>
+                        The Faculty of Computing and Information Technology (FOCS) of Tunku Abdul Rahman
+                        University of Management and Technology (TAR UMT) continuously aims to produce
+                        good quality and highly-demanded computing graduates. The good track of records in
+                        producing successful digital tech graduates is recognized by the Malaysia Digital
+                        Economy Corporation (MDEC)
+                        as the preferred digital tech education provider and thereby awarded TAR UMT as one of
+                        the Premier Digital Tech Institutions in the presence of the Ministry of Education.
+                    </span>
+                    <p class="text-md">
+                        FOCS actively involves in industry based research and development projects that require
+                        the latest knowledge and skills in the area of Artificial Intelligence, Data Science,
+                        Big Data Analytics, Machine Learning and Internet of Things to prepare our graduates for
+                        the Industrial Revolution 4.0 job market as well as readiness for the digital
+                        transformation in the industry.
+                    </p>
+                    <p class="text-md">
+                        FOCS always strive for excellence, driven by a team of dedicated and committed
+                        lecturers, which is the most important key ingredient to our graduates' success. To find
+                        out more about our lecturers'
+                        expertise areas, refer to the lecturers' profile.
+                    </p>
+                    <p class="text-md">
+                        We are looking forward for you to choose FOCS at TAR UMT as part of your life changing
+                        journey towards success in life. Find out more about our programmes as a step towards a
+                        rewarding career pathway.
+                        See you around!
+                    </p>
+                </div>
+                <div class="card mb-3" style="background-color: #f8f9fa;">
+                    <div class="card-header">
+                        <h2 class="text-center">AWARDS:</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Centre of Excellence for Big Data Analytics and Artificial Intelligence -
+                                Joint-collaboration with MDEC in 2020</li>
+                            <li>Premier Digital Tech IHL status in 2017 and being awarded again in 2019 and now
+                                being awarded the third time in 2022</li>
+                            <li>IBM Centre of Excellence in Big Data Analytics in 2019</li>
+                            <li>STEM CS Evaluator appointed by Carnegie Mellon Robotics Academy (CMRA) in 2017</li>
+                            <li>IBM-FASC Entrepreneurial Support Centre by IBM in 2014</li>
+                            <li>Industry Center of Excellence (ICoE) in ICT cluster in 2013 by MOHE</li>
+                            <li>The Most Engaged IHL Industry Academia Collaboration 2012 by MDeC</li>
+                            <li>IBM Center of Excellence Status for software by IBM in 2011</li>
+                            <li>Best Cisco Academy Award in 2010, 2011 and 2012</li>
+                            <li>Best Novell Academic Training Partner in 2009</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+                </form>
+            </div>
+{%endblock%}
