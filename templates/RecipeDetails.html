@@ -1,0 +1,29 @@
+{%extends "template.html"%}
+
+{% block title %}Recipe Details{% endblock %}
+{% block head %}
+{{super()}}
+
+{%endblock%}
+{% block content %}
+    <div style="height: 100%;">
+      <div class="col-md-12">
+        <div class="d-flex align-items-center" style="padding-top: 20px;">
+            <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black;"></a>
+            <h2 class="mx-auto" style="text-decoration: none; color: black;">test recipe NAme</h1>
+        </div>
+        <div class="d-flex justify-content-around" style="padding-top: 20px;">
+            <img width="400" src="https://www.allrecipes.com/thmb/gJ9I89B9iDeBvB1hikdlM9p-ACc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/233655-9f4eded039544eb68f0c796a6bd9578c.jpg">
+            <div>
+                test
+            </div>
+        </div>
+        <div style="padding-top: 20px;">
+            <h2>Ingredients</h2>
+        </div>
+        <div style="padding-top: 20px;">
+            <h2>Directions</h2>
+        </div>
+      </div>
+    </div>
+{%endblock%}

@@ -5,7 +5,7 @@ import numpy as np
 import time
 import config
 
-headers = {'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"}
+headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"}
 
 class webScraper():
     def __init__(self, url):
@@ -94,7 +94,7 @@ class webScraper():
 
 
 if __name__ == "__main__":
-    recipe_df = pd.read_csv(config.RECIPE_URLS)["recipe_urls"][:3]
+    recipe_df = pd.read_csv(config.RECIPE_URLS)["recipe_urls"]
     attribs = ['recipe_name', 'serves', 'cooking_time', 'ingredients','steps','img']
 
     temp = pd.DataFrame(columns=attribs)
