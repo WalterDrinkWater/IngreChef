@@ -4,35 +4,89 @@
 {% block head %}
 {{super()}}
 <style>
-.form span{
+  .form span {
     position: absolute;
     border-left: 1px solid gray;
     right: 20px;
-}
+  }
 
-.left-pan{
+  .left-pan {
     padding-left: 5px;
-}
+  }
 
-.left-pan i{
-   padding-left: 10px;
-}
+  .left-pan i {
+    padding-left: 10px;
+  }
+
+  .custom-pill {
+    background-color: #A9DFBF;
+    border: none;
+    color: black;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 16px;
+  }
+
+  .heading-line {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #000;
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+  }
+
+  .heading-line span {
+    background: #fff;
+    padding: 0 10px;
+  }
+
+  .pantry-container {
+    margin-top: 20px;
+  }
+
+  .detect-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 8px 12px 0 #eaeaea;
+  }
 </style>
 {%endblock%}
 {% block content %}
-    <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
-      <div class="col-md-12 d-flex flex-column">
-            <img src="static/media/logo example.png" class="rounded mx-auto d-block" style="margin-bottom: 20px; height: 80%; width: 80%;">
-        <form method="post" action="/recipes">
-        <div class="form d-flex justify-content-center align-items-center form-group" style="position: relative;">
-          <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
-          <input name="ingredients" type="text" class="form-control-lg form-control" placeholder="Enter ingredients" style="padding-left: 50px;" required>
-          <span class="left-pan"><a href="/" style="color: black;"><i class="fa fa-camera"></i></a></span>
-        </div>
-        <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 10px;">Search</button>
-        </div>
-      </form>
-      </div>
+<div class="col-xs-12 d-flex flex-column px-2 py-2">
+  <img src="static/media/IngreChef.png" class="rounded mx-auto d-block"
+    style="margin-bottom: 20px; height: 80%; width: 80%;">
+  <form name="ingredientForm" enctype=multipart/form-data method="post" action="/recipes">
+    <div class="d-flex justify-content-center align-items-center form-group" style="position: relative;">
+      <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
+      <input name="ingredients" type="text" class="form-control-lg form-control" placeholder="add/remove ingredient"
+        style="padding-left: 50px;" required>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
     </div>
+    <div class="pantry-container">
+      <h5 class="heading-line"><span>Pantry</span></h5>
+      <div class="custom-pill">idk</div>
+      <div class="custom-pill">Ingredient</div>
+      <div class="custom-pill">hao chi ma</div>
+      <div class="custom-pill">bu hao chi</div>
+      <div class="custom-pill">ke yi bu yao zuo le ma</div>
+      <h5 class="heading-line"></h5>
+    </div>
+    <div class="detect-container row justify-between items-center">
+
+    </div>
+
+  </form>
+  <form class="form-signin" method=post enctype=multipart/form-data name="form1" action="/detect">
+    <input type="file" id="imageInput" name="file" accept="image/*">
+    <br />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Upload</button>
+  </form>
+</div>
 {%endblock%}

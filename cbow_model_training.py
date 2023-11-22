@@ -2,12 +2,14 @@ import pandas as pd
 from gensim.models import Word2Vec
 from preprocessing import ingredient_parser,get_and_sort_corpus
 import config
+import nltk
 
 def get_window(corpus):
     lengths = [len(doc) for doc in corpus]
     avg_len = float(sum(lengths)) / len(lengths)
     return round(avg_len)
 
+nltk.download('wordnet')
 data = pd.read_csv(config.RECIPES_DETAILS)
 data['parsed'] = data.ingredients.apply(ingredient_parser)
 corpus = get_and_sort_corpus(data)
