@@ -39,7 +39,7 @@
         </thead>
         <tbody>
             {% for i in range(0,reco|length) %}
-            <tr onclick="window.location.href='/recipeDetails/{{ reco['recipe'][i] }}'">
+            <tr onclick="window.location.href='/recipeDetails/{{reco["recipe"][i] }}'">
                 <td>{{reco["recipe"][i]}}</td>
                 <td>{{reco["ingredients"][i]}}</td>
             </tr>
