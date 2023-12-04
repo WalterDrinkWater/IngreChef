@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 {% block head %}
 {{super()}}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <style>
   body {
     margin: 0;
@@ -56,6 +56,17 @@
     padding-bottom: 10px;
     border-radius: 4px;
     background-color: #F7F7F7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .image-display {
@@ -70,12 +81,8 @@
   }
 
   #spinner-div {
-    position: fixed;
-    display: none;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 2;
@@ -107,7 +114,52 @@
     font-size: 1.3rem;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   }
+
+  .autocomplete {
+    position: relative;
+    display: inline-block;
+  }
+
+  .search-input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  .suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: none;
+    z-index: 1;
+  }
+
+  .suggestion {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    vertical-align: middle;
+  }
+
+  .suggestion:hover {
+    background-color: #f9f9f9;
+  }
+
+  .suggestion-icon {
+    vertical-align: middle;
+  }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 {%endblock%}
 {% block content %}
 <div class="d-flex flex-column justify-content-between" style="max-width: 700px; min-height: 100%;">
@@ -115,11 +167,25 @@
     <img src="static/media/IngreChef.png" class="rounded mx-auto d-block"
       style="margin-bottom: 12px; height: 80%; width: 80%;">
 
-    <div class="d-flex justify-content-center align-items-center form-group" style="position: relative; width: 100%">
-      <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
-      <input name="ingredients" type="text" class="form-control" placeholder="add/remove ingredient"
-        style="padding-left: 50px;" required>
-      <button class="btn btn-primary" type="submit" disabled>add</button>
+    <div class="d-flex flex-column" style="position: relative; width: 100%">
+      <div class="d-flex justify-content-center align-items-center form-group" style="position: relative; width: 100%">
+        <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
+        <input id="searchInput" name="ingredients" type="text" class="form-control" placeholder="add/remove ingredient"
+          style="padding-left: 50px;" autocomplete="off" required>
+      </div>
+
+      <div class="suggestions" id="suggestionBox">
+        <div class="suggestion">
+          <i class="fa-solid fa-trash-can fa-lg" style="color: red;"></i>
+          <div>idk</div>
+          <div>remove</div>
+        </div>
+        <div class="suggestion">
+          <i class="fa-solid fa-plus" style="color: #45d362;"></i>
+          <div>idk</div>
+          <div>add</div>
+        </div>
+      </div>
     </div>
 
     <div id="pantry-container" class="pantry-container">
@@ -249,16 +315,22 @@
             <label class="d-flex flex-column justify-content-center" for="file">
               <div id="image-container"
                 class="image-container d-flex flex-column justify-content-center align-items-center">
-                <img class="image-display" alt="uploadImage">
-                <div>
-                  <h6>Upload or Capture Photo</h6>
+                <div id="input-image" class="input-image">
+                  <img class="image-display" alt="uploadImage">
+                  <div>
+                    <h6>Upload or Capture Photo</h6>
+                  </div>
+                  <div>to detect raw ingredients from image</div>
+                  <div class="mt-2"><i class="fa-solid fa-camera fa-2xl"></i></div>
                 </div>
-                <div>to detect raw ingredients from image</div>
-                <div class="mt-2"><i class="fa-solid fa-camera fa-2xl"></i></div>
+                <div id="spinner-div" class="pt-5">
+                  <div class="spinner-border text-primary" role="status">
+                  </div>
+                </div>
+
               </div>
             </label>
-            <input type="file" id="file" name="file" accept="image/*" style="display:none;" onchange="showImage()">
-            <button class="detect-btn btn btn-primary btn-block " type="submit">Detect Now</button>
+            <input type="file" id="file" name="file" accept="image/*" style="display:none;">
           </div>
         </div>
       </div>
@@ -291,6 +363,11 @@
 
 <script>
   $(document).ready(function () {
+    $("#spinner-div").hide()
+    $('#file').on('change', function () {
+      detectNow();
+    });
+
     $("#do-call").click(function () {
       $("#spinner-div").show();
       $.ajax({
@@ -326,6 +403,38 @@
     else
       noIngredientMode();
   })
+
+  function detectNow() {
+    var fileInput = document.getElementById('file');
+    var file = fileInput.files[0];
+
+    if (file) {
+      var formData = new FormData();
+      formData.append('file', file);
+      $("#input-image").hide();
+      $("#spinner-div").show();
+
+      $.ajax({
+        url: '/detect',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+
+          showImage(response["filename"]);
+        },
+        error: function (xhr, status, error) {
+          console.log("hi")
+        },
+        complete: function () {
+          $("#spinner-div").hide();
+        }
+      });
+    } else {
+      console.log('Please select a file to upload.');
+    }
+  }
 
   function addIngredient(event) {
     var mode = sessionStorage.getItem("mode");
@@ -402,27 +511,162 @@
     document.getElementById('normal-mode-panel').className = 'd-none';
   }
 
-  function showImage() {
-    // get the file input element
-    var fileInput = document.getElementById("file");
-    // get the selected file
-    var file = fileInput.files[0];
-    // create a URL for the file
-    var fileURL = URL.createObjectURL(file);
-    // create an image element
+  function showImage(filename) {
     var image = document.createElement("img");
-    // set the image source to the file URL
-    image.src = fileURL;
-    // set the image style to fill the box
+    image.src = "/static/prediction/" + filename;
     image.style.width = "100%";
     image.style.height = "100%";
     image.style.objectFit = "contain";
-    // get the box element
     var box = document.getElementById("image-container");
-    // remove any existing content in the box
     box.innerHTML = "";
-    // append the image to the box
     box.appendChild(image);
   }
+
+  const searchInput = document.getElementById('searchInput');
+  const suggestionBox = document.getElementById('suggestionBox');
+
+  const allIngredients = [
+    "egg",
+    "butter",
+    "garlic",
+    "milk",
+    "onion",
+    "sugar",
+    "flour",
+    "rice",
+    "cinnamon",
+    "ketcup",
+    "mayonnaise",
+    "potato",
+    "spaghetti",
+    "bell pepper",
+    "red onion",
+    "zucchini",
+    "cucumber",
+    "cauliflower",
+    "eggplant",
+    "cabbage",
+    "beetroot",
+    "lettuce",
+    "broccoli",
+    "spinach",
+    "bacon",
+    "ham",
+    "hot dog",
+    "chicken",
+    "beef",
+    "pork",
+    "fish"
+  ]
+
+  const addRemoveIcons = [
+    { icon: 'fa-solid fa-trash-can fa-lg', color: 'red', label: 'idk', action: 'remove' },
+    { icon: 'fa-solid fa-plus', color: '#45d362', label: 'idk', action: 'add' }
+  ];
+
+  function createSuggestionElement(suggestion, isRemove) {
+    const suggestionElement = document.createElement('div');
+    suggestionElement.classList.add('suggestion');
+
+    if (isRemove) {
+      const iconNameContainerElement = document.createElement('div');
+      iconNameContainerElement.className = "d-flex flex-row justify-content-start";
+
+      const iconContainerElement = document.createElement('div');
+      iconContainerElement.className = "suggestion-icon  me-3";
+
+      const iconElement = document.createElement('i');
+      iconElement.className = "fa-solid fa-trash-can";
+      iconElement.style.color = 'red';
+      iconContainerElement.appendChild(iconElement);
+
+      const labelElement = document.createElement('div');
+      labelElement.textContent = suggestion;
+
+      iconNameContainerElement.appendChild(iconContainerElement);
+      iconNameContainerElement.appendChild(labelElement);
+      suggestionElement.appendChild(iconNameContainerElement);
+
+      const actionElement = document.createElement('div');
+      actionElement.className = "text-end";
+      actionElement.textContent = 'remove';
+      suggestionElement.appendChild(actionElement);
+
+      suggestionElement.addEventListener('click', function () {
+        handleSuggestionClick(suggestion);
+      });
+    } else {
+
+      const iconNameContainerElement = document.createElement('div');
+      iconNameContainerElement.className = "d-flex flex-row justify-content-start ";
+
+      const iconContainerElement = document.createElement('div');
+      iconContainerElement.className = "suggestion-icon me-3";
+
+      const iconElement = document.createElement('i');
+      iconElement.className = "fa-solid fa-plus";
+      iconElement.style.color = '#01DFA5';
+      iconContainerElement.appendChild(iconElement);
+
+      const labelElement = document.createElement('div');
+      labelElement.textContent = suggestion;
+
+      iconNameContainerElement.appendChild(iconContainerElement);
+      iconNameContainerElement.appendChild(labelElement);
+      suggestionElement.appendChild(iconNameContainerElement);
+
+      const actionElement = document.createElement('div');
+      actionElement.className = "text-end";
+      actionElement.textContent = 'add';
+      suggestionElement.appendChild(actionElement);
+
+      suggestionElement.addEventListener('click', function () {
+        handleSuggestionClick(suggestion);
+      });
+    }
+
+    return suggestionElement;
+  }
+
+  searchInput.addEventListener('input', function () {
+    const inputValue = this.value.trim().toLowerCase();
+    const filteredSuggestions = allIngredients.filter(suggestion =>
+      suggestion.toLowerCase().startsWith(inputValue)
+    );
+    if (!filteredSuggestions.includes(inputValue) && inputValue !== "")
+      filteredSuggestions.unshift(this.value);
+    displaySuggestions(filteredSuggestions);
+  });
+
+  function displaySuggestions(filteredSuggestions) {
+    var pantry = JSON.parse(sessionStorage.getItem("ingredients"));
+    if (filteredSuggestions.length > 0) {
+      suggestionBox.innerHTML = '';
+      // filteredSuggestions.forEach(suggestion => {
+      //   const suggestionElement = document.createElement('div');
+      //   suggestionElement.classList.add('suggestion');
+      //   suggestionElement.textContent = suggestion;
+      //   suggestionElement.addEventListener('click', function () {
+      //     searchInput.value = suggestion;
+      //     suggestionBox.style.display = 'none';
+      //   });
+      //   suggestionBox.appendChild(suggestionElement);
+      // });
+      filteredSuggestions.forEach(suggestion => {
+        var isRemove = pantry.includes(suggestion);
+        suggestionBox.appendChild(createSuggestionElement(suggestion, isRemove));
+      });
+      suggestionBox.style.display = 'block';
+    } else {
+      suggestionBox.style.display = 'none';
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    const isClickInside = searchInput.contains(event.target) || suggestionBox.contains(event.target);
+    if (!isClickInside) {
+      suggestionBox.style.display = 'none';
+    }
+  });
 </script>
 {%endblock%}

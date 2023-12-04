@@ -87,11 +87,14 @@ def det_predict():
         img_bytes = file.read()
         results = get_det_prediction(img_bytes)
         filename = results.save(save_dir=f'static/prediction')
-        coordinates = results.xyxyn[0].tolist()
-        classes = results.names
-        print(classes)
-        return render_template('Inference.html', result_image = "prediction/" + filename)
-    return render_template('Home.html')
+        # coordinates = results.xyxyn[0].tolist()
+        # classes = results.names
+        # print(classes)
+        # return render_template('Inference.html', result_image = "prediction/" + filename)
+        data = {
+            "filename" : filename,
+        }
+    return jsonify(data)
 
 def inferenceResult(filename, classes, coordinates):
     bounding_box_data = []
