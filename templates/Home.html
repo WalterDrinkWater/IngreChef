@@ -405,9 +405,10 @@
         processData: false,
         success: function (response) {
           showImage(response["filename"]);
-          detectAddIngredient(response["classes"])
-          console.log("hi");
-        }, 
+          response["classes"].forEach((ingredient) => {
+            addIngredient(ingredient);
+          })
+        },
         error: function (xhr, status, error) {
           console.log("hi")
         },
@@ -418,12 +419,6 @@
     } else {
       console.log('Please select a file to upload.');
     }
-  }
-
-  function detectAddIngredient(ingredients){
-    ingredients.forEach((ingredient)=>{
-      addIngredient(ingredient);
-    })
   }
 
   function addIngredientAction(event) {
@@ -636,7 +631,7 @@
       filteredSuggestions.unshift(this.value);
       displaySuggestions(filteredSuggestions);
     }
-    else if (inputValue === ""){
+    else if (inputValue === "") {
       suggestionBox.style.display = 'none';
     }
     else {
@@ -648,16 +643,6 @@
     var pantry = JSON.parse(sessionStorage.getItem("ingredients")) || [];
     if (filteredSuggestions.length > 0) {
       suggestionBox.innerHTML = '';
-      // filteredSuggestions.forEach(suggestion => {
-      //   const suggestionElement = document.createElement('div');
-      //   suggestionElement.classList.add('suggestion');
-      //   suggestionElement.textContent = suggestion;
-      //   suggestionElement.addEventListener('click', function () {
-      //     searchInput.value = suggestion;
-      //     suggestionBox.style.display = 'none';
-      //   });
-      //   suggestionBox.appendChild(suggestionElement);
-      // });
       filteredSuggestions.forEach(suggestion => {
         var isRemove = pantry.includes(suggestion);
         suggestionBox.appendChild(createSuggestionElement(suggestion, isRemove));
