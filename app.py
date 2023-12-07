@@ -87,12 +87,13 @@ def det_predict():
         img_bytes = file.read()
         results = get_det_prediction(img_bytes)
         filename = results.save(save_dir=f'static/prediction')
-        # coordinates = results.xyxyn[0].tolist()
-        # classes = results.names
-        # print(classes)
-        # return render_template('Inference.html', result_image = "prediction/" + filename)
+        predictions = results.pred[0]
+        detected_classes = [int(x) for x in list(predictions[:, 5])]
+        all_classes = results.names
+        detected_classes = [all_classes[i] for i in detected_classes]
         data = {
             "filename" : filename,
+            "classes": detected_classes
         }
     return jsonify(data)
 
