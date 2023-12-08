@@ -67,10 +67,6 @@ def RecipeDetails(recipeName):
     print(recipeName)
     return render_template('RecipeDetails.html')
 
-@app.route("/inference2")
-def Inference2():
-    return render_template('Inference2.html')
-
 def get_det_prediction(img_bytes):
     img = Image.open(io.BytesIO(img_bytes))
     results = det_model(img, size=640)
