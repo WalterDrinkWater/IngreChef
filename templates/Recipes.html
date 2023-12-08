@@ -4,48 +4,30 @@
 {% block head %}
 {{super()}}
 <style>
-.form span{
-    position: absolute;
-    border-left: 1px solid gray;
-    right: 120px;
-}
-
-.left-pan{
-    padding-left: 5px;
-}
-
-.left-pan i{
-   padding-left: 10px;
-}
+    .custom-padding{
+        padding-top:20px;
+    }
 </style>
 {%endblock%}
 {% block content %}
     <div class="d-flex justify-content-center" style="height: 100%;">
       <div class="col-md-12 d-flex flex-column">
-        <form method="post" action="">
-        <div class="form d-flex justify-content-center align-items-center form-group" style="position: relative; margin-top: 20px;">
-          <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
-          <input name="ingredients" value="{{request.form['ingredients']}}" type="text" class="form-control-lg form-control" placeholder="Enter ingredients" style="padding-left: 50px;" required>
-          <span class="left-pan"><a href="/" style="color: black;"><i class="fa fa-camera"></i></a></span>
-            <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 10px;">Search</button>
+        <div class="d-flex align-items-center custom-padding">
+          <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black; font-size: 1.5rem;" onclick="history.back()"></a>
+          <h4 class="mx-auto" style="text-decoration: none; color: black; text-align: center;">Recommendation</h4>
         </div>
-      </form>
-      <table id='datatable' class='table table-primary table-bordered table-hover table-striped' width='100%' style="margin-top: 20px;">
-        <thead>
-            <tr>
-                <th class="w-25">Recipe Name</th>
-                <th>Ingredients</th>           
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in range(0,reco|length) %}
-            <tr onclick="window.location.href='/recipeDetails/{{reco["recipe"][i] }}'">
-                <td>{{reco["recipe"][i]}}</td>
-                <td>{{reco["ingredients"][i]}}</td>
-            </tr>
+        <div class="custom-padding">
+          <h5>Ingredients :
+            {% for ingredient in ingred %}
+              {{ingredient}}
+              {% if not loop.last %},{% endif %}
             {% endfor %}
-        </tbody>
-    </table>
+          </h5>
+          {% for i in range(0,reco|length) %}
+          <h5 class="custom-padding"><a href="/recipeDetails/{{reco["recipe"][i] }}">{{reco["recipe"][i]}}</a></h5>
+          <p style="text-align:start;">{{reco["ingredients"][i]}}</p>
+          {% endfor %}
+        </div>
       </div>
     </div>
 {%endblock%}
