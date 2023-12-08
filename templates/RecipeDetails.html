@@ -3,25 +3,36 @@
 {% block title %}Recipe Details{% endblock %}
 {% block head %}
 {{super()}}
-
+<style>
+    .custom-padding{
+        padding-top:20px;
+    }
+</style>
 {%endblock%}
 {% block content %}
     <div style="height: 100%;">
       <div class="col-md-12">
-        <div class="d-flex align-items-center" style="padding-top: 20px;">
-            <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black;"></a>
-            <h2 class="mx-auto" style="text-decoration: none; color: black;">test recipe NAme</h1>
+        <div class="d-flex align-items-center custom-padding">
+            <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black; font-size: 1.5rem;"></a>
+            <h4 class="mx-auto" style="text-decoration: none; color: black;">test recipe Name</h4>
         </div>
-        <div class="d-flex justify-content-around" style="padding-top: 20px;">
-            <img width="400" src="https://www.allrecipes.com/thmb/gJ9I89B9iDeBvB1hikdlM9p-ACc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/233655-9f4eded039544eb68f0c796a6bd9578c.jpg">
-            <div>
-                test
+        <div class="d-flex justify-content-center custom-padding">
+            <img width="250" src="https://www.allrecipes.com/thmb/gJ9I89B9iDeBvB1hikdlM9p-ACc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/233655-9f4eded039544eb68f0c796a6bd9578c.jpg">
+        </div>
+        <div class="d-flex justify-content-around" style="margin-top: 20px;">
+            <div style="padding-right: 20px;">
+                <h6>Serves:</h6>
+                enough for 1 pizza
             </div>
-        </div>
-        <div style="padding-top: 20px;">
+            <div>
+                <h6>Cooking Time:</h6>
+                2 days 1 hr 25 mins
+            </div>
+        </div>        
+        <div class="custom-padding">
             <h2>Ingredients</h2>
         </div>
-        <div style="padding-top: 20px;">
+        <div class="custom-padding">
             <h2>Directions</h2>
         </div>
       </div>

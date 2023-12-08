@@ -3,6 +3,7 @@ from gensim.models import Word2Vec
 from preprocessing import ingredient_parser,get_and_sort_corpus
 import config
 import nltk
+nltk.download('wordnet')
 
 def get_window(corpus):
     lengths = [len(doc) for doc in corpus]
