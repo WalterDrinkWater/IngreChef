@@ -1,0 +1,42 @@
+{%extends "template.html"%}
+
+{% block title %}Home{% endblock %}
+{% block head %}
+{{super()}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+    .form span {
+        position: absolute;
+        border-left: 1px solid gray;
+        right: 20px;
+    }
+
+    .left-pan {
+        padding-left: 5px;
+    }
+
+    .left-pan i {
+        padding-left: 10px;
+    }
+</style>
+{%endblock%}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80%;">
+    <div class="col-md-12 d-flex flex-column">
+        <!-- detected image display -->
+        <img id="my-image" src="{{ url_for('static', filename=result_image) }}" width="60" height="60" />
+        <svg id="svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </svg>
+    </div>
+</div>
+
+<script>
+    function predict(){
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {}
+        })
+    }
+</script>
+{%endblock%}
