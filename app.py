@@ -1,3 +1,12 @@
+from PIL import Image
+import numpy as np
+import torch
+import cv2
+import io
+import os
+import datetime
+import json
+
 from flask import (
     Flask,
     render_template,
@@ -27,6 +36,11 @@ db_conn = connections.Connection(
     db=config.customdb
 )
 app = Flask(__name__)
+
+def load_det_model():
+    return torch.hub.load('./yolo', 'custom','./yolo/best.pt', source='local',trust_repo=True)
+
+det_model = load_det_model()
 
 @app.route("/")
 def Home():
@@ -73,6 +87,47 @@ def strToCleanList(str):
     splited_list[0] = splited_list[0][1:len(splited_list[0])]
     splited_list[len(splited_list)-1] = splited_list[len(splited_list)-1][0:len(splited_list[len(splited_list)-1])-1]
     return splited_list
+
+@app.route("/inference2")
+def Inference2():
+    return render_template('Inference2.html')
+
+def get_det_prediction(img_bytes):
+    img = Image.open(io.BytesIO(img_bytes))
+    results = det_model(img, size=640)
+    return results
+
+@app.route('/detect', methods=['GET', 'POST'])
+def det_predict():
+    if request.method == 'POST':
+        if request.files['file'].filename == '':
+            return render_template('Home.html')
+        file = request.files.get('file')
+        if not file:
+            return render_template('Home.html')
+        img_bytes = file.read()
+        results = get_det_prediction(img_bytes)
+        filename = results.save(save_dir=f'static/prediction')
+        predictions = results.pred[0]
+        detected_classes = [int(x) for x in list(predictions[:, 5])]
+        all_classes = results.names
+        detected_classes = [all_classes[i] for i in detected_classes]
+        data = {
+            "filename" : filename,
+            "classes": detected_classes
+        }
+    return jsonify(data)
+
+def inferenceResult(filename, classes, coordinates):
+    bounding_box_data = []
+    for box in coordinates:
+        bounding_box_data.append({
+            "image": filename,
+            "xyxyn": box,
+            "labels": classes[box[-1]]
+        })
+    json_data = json.dumps(bounding_box_data)
+    return json_data
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

@@ -3,36 +3,661 @@
 {% block title %}Home{% endblock %}
 {% block head %}
 {{super()}}
+
 <style>
-.form span{
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .custom-pill {
+    background-color: #BEF1F6;
+    border: none;
+    color: black;
+    padding: 5px 10px;
+    text-decoration: none;
+    margin: 4px 2px;
+    border-radius: 16px;
+    vertical-align: middle;
+  }
+
+  .heading-line {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #000;
+    line-height: 0.1em;
+    margin: 10px 0 10px;
+  }
+
+  .heading-line span {
+    background: #fff;
+    padding: 0 10px;
+  }
+
+  .pantry-container {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .detect-container {
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.24);
+  }
+
+  .image-container {
+    width: 100%;
+    height: 320px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 4px;
+    background-color: #F7F7F7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-display {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(135deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(135deg, transparent 75%, #ccc 75%);
+  }
+
+  .detect-btn {
+    box-shadow: 0 8px 12px 0 #bdbdbd;
+  }
+
+  #spinner-div {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+  }
+
+  .mini-item {
+    margin: 6px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: rgba(181, 191, 200, 0.2);
+    color: rgba(79, 80, 90, 0.6);
+    font-size: 14px;
+    line-height: 20px;
+    text-decoration: none;
+  }
+
+  .mini-item:active {
+    transform: scale(0.98);
+    /* Scaling button to 0.98 to its original size */
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    /* Lowering the shadow */
+  }
+
+  .recommend-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 1.3rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  }
+
+  .autocomplete {
+    position: relative;
+    display: inline-block;
+  }
+
+  .search-input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  .suggestions {
     position: absolute;
-    border-left: 1px solid gray;
-    right: 20px;
-}
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: none;
+    z-index: 1;
+  }
 
-.left-pan{
-    padding-left: 5px;
-}
+  .suggestion {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    vertical-align: middle;
+  }
 
-.left-pan i{
-   padding-left: 10px;
-}
+  .suggestion:hover {
+    background-color: #f9f9f9;
+  }
+
+  .suggestion-icon {
+    vertical-align: middle;
+  }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 {%endblock%}
 {% block content %}
-    <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
-      <div class="col-md-12 d-flex flex-column">
-            <img src="static/media/logo example.png" class="rounded mx-auto d-block" style="margin-bottom: 20px; height: 80%; width: 80%;">
-        <form method="post" action="/recipes">
-        <div class="form d-flex justify-content-center align-items-center form-group" style="position: relative;">
-          <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
-          <input name="ingredients" type="text" class="form-control-lg form-control" placeholder="Enter ingredients" style="padding-left: 50px;" required>
-          <span class="left-pan"><a href="/" style="color: black;"><i class="fa fa-camera"></i></a></span>
+<div class="d-flex flex-column justify-content-between" style="max-width: 700px; min-height: 100%;">
+  <div class="d-flex flex-column align-items-center py-2 px-3">
+    <img src="static/media/IngreChef.png" class="rounded mx-auto d-block"
+      style="margin-bottom: 12px; height: 80%; width: 80%;">
+
+    <div class="d-flex flex-column" style="position: relative; width: 100%">
+      <div class="d-flex justify-content-center align-items-center form-group" style="position: relative; width: 100%">
+        <i class="fa fa-search" style="position: absolute; left: 20px;"></i>
+        <input id="searchInput" name="ingredients" type="text" class="form-control" placeholder="add/remove ingredient"
+          style="padding-left: 50px;" autocomplete="off" required>
+      </div>
+
+      <div class="suggestions" id="suggestionBox">
+        <div class="suggestion">
+          <i class="fa-solid fa-trash-can fa-lg" style="color: red;"></i>
+          <div>idk</div>
+          <div>remove</div>
         </div>
-        <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 10px;">Search</button>
+        <div class="suggestion">
+          <i class="fa-solid fa-plus" style="color: #45d362;"></i>
+          <div>idk</div>
+          <div>add</div>
         </div>
-      </form>
       </div>
     </div>
+
+    <div id="pantry-container" class="pantry-container">
+      <h5 class="heading-line"><span>Pantry</span></h5>
+
+      <div id="no-ingredient-panel" class="d-none">
+        <div>No ingredients In Pantry Now</div>
+      </div>
+
+      <div id="normal-mode-panel" class="d-none">
+        <div id="normal-mode-buttons" class="d-flex flex-row justify-content-end mb-1">
+          <div id="dustbin" onclick="removeMode()" class="dustbin">
+            <i class="fa-solid fa-trash-can fa-lg" style="color: #000000;"></i>
+          </div>
+        </div>
+        <div id="normal-pantry-items" class="d-flex flex-row flex-wrap justify-content-start">
+        </div>
+      </div>
+
+      <div id="remove-mode-panel" class="d-none">
+        <div id="remove-mode-buttons" class="d-flex flex-row justify-content-end mb-1">
+          <div class="delete-all-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <strong style="color:red">Delete All</strong>
+          </div>
+          <div class="done-btn ms-3" onclick="normalMode()"><strong style="color:black">Done</strong></div>
+        </div>
+        <div id="remove-pantry-items" class="d-flex flex-row flex-wrap justify-content-start">
+        </div>
+      </div>
+    </div>
+    <h5 class="heading-line"></h5>
+  </div>
+
+  <div class="d-flex flex-column align-items-center" style="width: 100%;">
+    <nav style="width: 100%; margin-bottom: 10px;">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-suggestion-tab" data-bs-toggle="tab" data-bs-target="#nav-suggestion"
+          type="button" role="tab" aria-controls="nav-suggestion" aria-selected="true">Suggestion</button>
+        <button class="nav-link" id="nav-detection-tab" data-bs-toggle="tab" data-bs-target="#nav-detection"
+          type="button" role="tab" aria-controls="nav-detection" aria-selected="false">Detection</button>
+      </div>
+    </nav>
+    <div class="tab-content mt-2" id="nav-tabContent" style="width:100%">
+      <div class="tab-pane fade show active" id="nav-suggestion" role="tabpanel" aria-labelledby="nav-suggestion-tab">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseOne">
+                Essentials
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+              <div class="accordion-body d-flex flex-row justify-content-start flex-wrap">
+                <div class="mini-item" onclick="addIngredientAction(event)">egg</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">butter</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">garlic</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">milk</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">onion</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">sugar</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">flour</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">rice</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">cinnamon</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">ketchup</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">mayonnaise</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">potato</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">spaghetti</div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseTwo">
+                Vegetables
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+              <div class="accordion-body d-flex flex-row justify-content-start flex-wrap">
+                <div class="mini-item" onclick="addIngredientAction(event)">garlic</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">onion</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">bell pepper</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">carrot</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">tomato</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">potato</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">red onion</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">zucchini</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">cucumber</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">cauliflower</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">eggplant</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">cabbage</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">beetroot</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">lettuce</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">broccoli</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">spinach</div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseThree">
+                Meats
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+              <div class="accordion-body d-flex flex-row justify-content-start flex-wrap">
+                <div class="mini-item" onclick="addIngredientAction(event)">bacon</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">ham</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">hot dog</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">chicken</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">beef</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">pork</div>
+                <div class="mini-item" onclick="addIngredientAction(event)">fish</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="nav-detection" role="tabpanel" aria-labelledby="nav-detection-tab">
+        <div class="d-flex flex-column align-items-center">
+          <div class="detect-container d-flex flex-column justify-content-center ">
+            <label class="d-flex flex-column justify-content-center" for="file">
+              <div id="image-container"
+                class="image-container d-flex flex-column justify-content-center align-items-center">
+                <div id="input-image" class="input-image">
+                  <img class="image-display" alt="uploadImage">
+                  <div>
+                    <h6>Upload or Capture Photo</h6>
+                  </div>
+                  <div>to detect raw ingredients from image</div>
+                  <div class="mt-2"><i class="fa-solid fa-camera fa-2xl"></i></div>
+                </div>
+                <div id="spinner-div" class="pt-5">
+                  <div class="spinner-border text-primary" role="status">
+                  </div>
+                </div>
+
+              </div>
+            </label>
+            <input type="file" id="file" name="file" accept="image/*" style="display:none;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex" style="margin-top: auto; position: sticky; bottom:0">
+    <button class="btn btn-primary recommend-btn" type="submit">
+      What Can I Cook With These</button>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete All ?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure to delete all ingredients from pantry ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="removeAll()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function () {
+    $("#spinner-div").hide()
+    $('#file').on('change', function () {
+      detectNow();
+    });
+  });
+
+  window.addEventListener('load', function () {
+    var pantry = JSON.parse(sessionStorage.getItem('ingredients')) || [];
+    if (pantry.length >= 1) {
+      var mode = sessionStorage.getItem("mode");
+      if (mode === "normal") {
+        normalMode();
+      }
+      else if (mode === "remove") {
+        removeMode();
+      }
+      else {
+        normalMode();
+      }
+    }
+    else
+      noIngredientMode();
+  })
+
+  function detectNow() {
+    var fileInput = document.getElementById('file');
+    var file = fileInput.files[0];
+
+    if (file) {
+      var formData = new FormData();
+      formData.append('file', file);
+      $("#input-image").hide();
+      $("#spinner-div").show();
+
+      $.ajax({
+        url: '/detect',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          showImage(response["filename"]);
+          response["classes"].forEach((ingredient) => {
+            addIngredient(ingredient);
+          })
+        },
+        error: function (xhr, status, error) {
+          console.log("hi")
+        },
+        complete: function () {
+          $("#spinner-div").hide();
+        }
+      });
+    } else {
+      console.log('Please select a file to upload.');
+    }
+  }
+
+  function addIngredientAction(event) {
+    var clickedDiv = event.target;
+    var ingredient = clickedDiv.textContent || clickedDiv.innerText;
+    addIngredient(ingredient);
+  }
+
+  function addIngredient(ingredient) {
+    var mode = sessionStorage.getItem("mode");
+    var pantry = JSON.parse(sessionStorage.getItem('ingredients')) || [];
+    if (!pantry.includes(ingredient)) {
+      pantry.push(ingredient)
+      sessionStorage.setItem("ingredients", JSON.stringify(pantry));
+      if (mode === "normal")
+        normalMode();
+      else if (mode === "remove")
+        removeMode();
+      else
+        normalMode();
+    }
+  }
+
+  function removeIngredientAction(event) {
+    var clickedDiv = event.target;
+    var ingredient = clickedDiv.textContent || clickedDiv.innerText;
+    removeIngredient(ingredient)
+  }
+
+  function removeIngredient(ingredient) {
+    var pantry = JSON.parse(sessionStorage.getItem("ingredients")) || [];
+    pantry = pantry.filter(function (ingre) { return ingre !== ingredient })
+    sessionStorage.setItem("ingredients", JSON.stringify(pantry));
+    if (pantry.length >= 1)
+      removeMode();
+    else
+      noIngredientMode();
+  }
+
+  function removeAll() {
+    sessionStorage.setItem("ingredients", JSON.stringify([]));
+    noIngredientMode();
+  }
+
+  function removeMode() {
+    sessionStorage.setItem("mode", "remove");
+    document.getElementById('no-ingredient-panel').className = 'd-none';
+    document.getElementById('remove-mode-panel').className = 'd-flex flex-column';
+    document.getElementById('normal-mode-panel').className = 'd-none';
+    var pantry = JSON.parse(sessionStorage.getItem("ingredients")) || [];
+    var pantryItems = document.getElementById('remove-pantry-items');
+    pantryItems.innerHTML = '';
+    pantry.forEach(function (element) {
+      var div = document.createElement('div');
+      div.className = 'custom-pill';
+      div.innerHTML = '<span>' + element + '</span><i class="fa-solid fa-xmark ms-1"></i>';
+      div.onclick = function () { removeIngredientAction(event); };
+      pantryItems.appendChild(div);
+    });
+  }
+
+  function normalMode() {
+    sessionStorage.setItem("mode", "normal");
+    document.getElementById('no-ingredient-panel').className = 'd-none';
+    document.getElementById('remove-mode-panel').className = 'd-none';
+    document.getElementById('normal-mode-panel').className = 'd-flex flex-column';
+    var pantry = JSON.parse(sessionStorage.getItem("ingredients")) || [];
+    var pantryItems = document.getElementById('normal-pantry-items');
+    pantryItems.innerHTML = '';
+    pantry.forEach(function (element) {
+      var div = document.createElement('div');
+      div.className = 'custom-pill';
+      div.innerHTML = '<span>' + element + '</span>';
+      pantryItems.appendChild(div);
+    });
+  }
+
+  function noIngredientMode() {
+    sessionStorage.setItem("mode", "empty");
+    document.getElementById('no-ingredient-panel').className = 'd-flex justify-content-center align-items-center';
+    document.getElementById('remove-mode-panel').className = 'd-none';
+    document.getElementById('normal-mode-panel').className = 'd-none';
+  }
+
+  function showImage(filename) {
+    var image = document.createElement("img");
+    image.src = "/static/prediction/" + filename;
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "contain";
+    var box = document.getElementById("image-container");
+    box.innerHTML = "";
+    box.appendChild(image);
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const suggestionBox = document.getElementById('suggestionBox');
+
+  const allIngredients = [
+    "egg",
+    "butter",
+    "garlic",
+    "milk",
+    "onion",
+    "sugar",
+    "flour",
+    "rice",
+    "cinnamon",
+    "ketcup",
+    "mayonnaise",
+    "potato",
+    "spaghetti",
+    "bell pepper",
+    "red onion",
+    "zucchini",
+    "cucumber",
+    "cauliflower",
+    "eggplant",
+    "cabbage",
+    "beetroot",
+    "lettuce",
+    "broccoli",
+    "spinach",
+    "bacon",
+    "ham",
+    "hot dog",
+    "chicken",
+    "beef",
+    "pork",
+    "fish"
+  ]
+
+  const addRemoveIcons = [
+    { icon: 'fa-solid fa-trash-can fa-lg', color: 'red', label: 'idk', action: 'remove' },
+    { icon: 'fa-solid fa-plus', color: '#45d362', label: 'idk', action: 'add' }
+  ];
+
+  function createSuggestionElement(suggestion, isRemove) {
+    const suggestionElement = document.createElement('div');
+    suggestionElement.classList.add('suggestion');
+
+    if (isRemove) {
+      const iconNameContainerElement = document.createElement('div');
+      iconNameContainerElement.className = "d-flex flex-row justify-content-start";
+
+      const iconContainerElement = document.createElement('div');
+      iconContainerElement.className = "suggestion-icon  me-3";
+
+      const iconElement = document.createElement('i');
+      iconElement.className = "fa-solid fa-trash-can";
+      iconElement.style.color = 'red';
+      iconContainerElement.appendChild(iconElement);
+
+      const labelElement = document.createElement('div');
+      labelElement.textContent = suggestion;
+
+      iconNameContainerElement.appendChild(iconContainerElement);
+      iconNameContainerElement.appendChild(labelElement);
+      suggestionElement.appendChild(iconNameContainerElement);
+
+      const actionElement = document.createElement('div');
+      actionElement.className = "text-end";
+      actionElement.textContent = 'remove';
+      suggestionElement.appendChild(actionElement);
+
+      suggestionElement.addEventListener('click', function () {
+        removeIngredient(suggestion);
+        suggestionBox.style.display = 'none';
+      });
+    } else {
+
+      const iconNameContainerElement = document.createElement('div');
+      iconNameContainerElement.className = "d-flex flex-row justify-content-start ";
+
+      const iconContainerElement = document.createElement('div');
+      iconContainerElement.className = "suggestion-icon me-3";
+
+      const iconElement = document.createElement('i');
+      iconElement.className = "fa-solid fa-plus";
+      iconElement.style.color = '#01DFA5';
+      iconContainerElement.appendChild(iconElement);
+
+      const labelElement = document.createElement('div');
+      labelElement.textContent = suggestion;
+
+      iconNameContainerElement.appendChild(iconContainerElement);
+      iconNameContainerElement.appendChild(labelElement);
+      suggestionElement.appendChild(iconNameContainerElement);
+
+      const actionElement = document.createElement('div');
+      actionElement.className = "text-end";
+      actionElement.textContent = 'add';
+      suggestionElement.appendChild(actionElement);
+
+      suggestionElement.addEventListener('click', function () {
+        addIngredient(suggestion);
+        suggestionBox.style.display = 'none';
+      });
+    }
+
+    return suggestionElement;
+  }
+
+  searchInput.addEventListener('input', function () {
+    const inputValue = this.value.trim().toLowerCase();
+    const filteredSuggestions = allIngredients.filter(suggestion =>
+      suggestion.toLowerCase().startsWith(inputValue)
+    );
+    if (!filteredSuggestions.includes(inputValue) && inputValue !== "") {
+      filteredSuggestions.unshift(this.value);
+      displaySuggestions(filteredSuggestions);
+    }
+    else if (inputValue === "") {
+      suggestionBox.style.display = 'none';
+    }
+    else {
+      displaySuggestions(filteredSuggestions);
+    }
+  });
+
+  function displaySuggestions(filteredSuggestions) {
+    var pantry = JSON.parse(sessionStorage.getItem("ingredients")) || [];
+    if (filteredSuggestions.length > 0) {
+      suggestionBox.innerHTML = '';
+      filteredSuggestions.forEach(suggestion => {
+        var isRemove = pantry.includes(suggestion);
+        suggestionBox.appendChild(createSuggestionElement(suggestion, isRemove));
+      });
+      suggestionBox.style.display = 'block';
+    } else {
+      suggestionBox.style.display = 'none';
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    const isClickInside = searchInput.contains(event.target) || suggestionBox.contains(event.target);
+    if (!isClickInside) {
+      suggestionBox.style.display = 'none';
+    }
+  });
+</script>
 {%endblock%}
