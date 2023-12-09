@@ -340,7 +340,7 @@
     <form method="post" action="/recipes" id="ingredientForm" style="display: none;">
       <input type="hidden" id="ingredients" name="ingredients">
     </form>
-    <button class="btn btn-primary recommend-btn" onclick="submitIngredients()">
+    <button id="recommend-btn" class="btn btn-primary recommend-btn" onclick="submitIngredients()">
       What Can I Cook With These</button>
   </div>
 
@@ -443,6 +443,7 @@
       else
         normalMode();
     }
+    document.getElementById('recommend-btn').classList.remove('d-none');
   }
 
   function removeIngredientAction(event) {
@@ -504,6 +505,7 @@
     document.getElementById('no-ingredient-panel').className = 'd-flex justify-content-center align-items-center';
     document.getElementById('remove-mode-panel').className = 'd-none';
     document.getElementById('normal-mode-panel').className = 'd-none';
+    document.getElementById('recommend-btn').className += ' d-none';
   }
 
   function showImage(filename) {

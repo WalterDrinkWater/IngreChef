@@ -972,7 +972,7 @@ class Detections:
                 current_datetime = datetime.datetime.now()
                 f = current_datetime.strftime("%Y%m%d_%H%M%S.jpg")
                 img.save(Path(save_dir) / f)  # save
-                print(f"{'Saved' * (i == 0)} {f}", end=',' if i < self.n - 1 else f' to {save_dir}\n')
+                # print(f"{'Saved' * (i == 0)} {f}", end=',' if i < self.n - 1 else f' to {save_dir}\n')
                 return f
             if render:
                 self.imgs[i] = np.asarray(img)

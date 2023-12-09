@@ -40,6 +40,15 @@ app = Flask(__name__)
 def load_det_model():
     return torch.hub.load('./yolo', 'custom','./yolo/best.pt', source='local',trust_repo=True)
 
+model = Word2Vec.load(config.MODEL)
+model.init_sims(replace=True)
+data = pd.read_csv(config.RECIPES_DETAILS)
+data["parsed"] = data.ingredients.apply(ingredient_parser)
+corpus = get_and_sort_corpus(data)
+tfidf_vec_tr = TfidfEmbeddingVectorizer(model)
+tfidf_vec_tr.fit(corpus)
+doc_vec = tfidf_vec_tr.transform(corpus)
+doc_vec = [doc.reshape(1, -1) for doc in doc_vec]
 det_model = load_det_model()
 
 @app.route("/")
@@ -48,17 +57,6 @@ def Home():
 
 @app.route("/recipes", methods=['GET', 'POST'])
 def Recipe():
-    model = Word2Vec.load(config.MODEL)
-    model.init_sims(replace=True)
-
-    data = pd.read_csv(config.RECIPES_DETAILS)
-    data["parsed"] = data.ingredients.apply(ingredient_parser)
-    corpus = get_and_sort_corpus(data)
-    tfidf_vec_tr = TfidfEmbeddingVectorizer(model)
-    tfidf_vec_tr.fit(corpus)
-    doc_vec = tfidf_vec_tr.transform(corpus)
-    doc_vec = [doc.reshape(1, -1) for doc in doc_vec]
-
     #clean input
     input = request.form['ingredients'].lower()
     input = input.split(",")
