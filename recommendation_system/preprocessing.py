@@ -3,7 +3,6 @@ import string
 import ast
 import re
 import unidecode
-
 from collections import Counter
 from nltk.stem import WordNetLemmatizer
 
@@ -14,7 +13,6 @@ def get_and_sort_corpus(data):
         array.sort()
         sorted_list.append(array)
     return sorted_list
-
 
 def ingredient_parser(ingreds):
 
