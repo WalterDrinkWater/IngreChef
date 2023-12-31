@@ -112,6 +112,7 @@
     padding-top: 12px;
     padding-bottom: 12px;
     font-size: 1.3rem;
+    z-index: 999;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   }
 
@@ -330,7 +331,7 @@
 
               </div>
             </label>
-            <input type="file" id="file" name="file" accept="image/*" style="display:none;">
+            <input type="file" id="file" name="file" accept=".jpg, .jpeg" style="display:none;">
           </div>
         </div>
       </div>
@@ -450,6 +451,7 @@
     var clickedDiv = event.target;
     var ingredient = clickedDiv.textContent || clickedDiv.innerText;
     removeIngredient(ingredient)
+    console.log(event);
   }
 
   function removeIngredient(ingredient) {
@@ -479,7 +481,9 @@
       var div = document.createElement('div');
       div.className = 'custom-pill';
       div.innerHTML = '<span>' + element + '</span><i class="fa-solid fa-xmark ms-1"></i>';
-      div.onclick = function () { removeIngredientAction(event); };
+      div.addEventListener("click", (event) => {
+        removeIngredientAction(event);
+      });
       pantryItems.appendChild(div);
     });
   }
