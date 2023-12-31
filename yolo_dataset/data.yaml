@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 11
+names: ['broccoli', 'carrot', 'cucumber', 'egg', 'eggplant', 'garlic', 'ginger', 'lemon', 'onion', 'potato', 'tomato']
+
+roboflow:
+  workspace: fyp-j7cpt
+  project: grocery3
+  version: 21
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/fyp-j7cpt/grocery3/dataset/21
