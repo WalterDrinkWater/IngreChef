@@ -3,7 +3,7 @@ MODEL = "./recommendation_system/model_cbow.bin"
 
 customhost = "ingrechef.c9ykhllwofkw.us-east-1.rds.amazonaws.com"
 customuser = "admin"
-custompass = "admin123"
+custompass = "Ingrechef05"
 customdb = "IngreChef"
 customregion = "us-east-1"
 

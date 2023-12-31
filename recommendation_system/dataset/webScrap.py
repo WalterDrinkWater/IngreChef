@@ -94,7 +94,7 @@ class webScraper():
 
 
 if __name__ == "__main__":
-    recipe_df = pd.read_csv(config.RECIPE_URLS)["recipe_urls"][:3]
+    recipe_df = pd.read_csv(config.RECIPE_URLS)["recipe_urls"]
     attribs = ['recipe_name', 'serves', 'cooking_time', 'ingredients','steps','img']
 
     temp = pd.DataFrame(columns=attribs)
