@@ -4,36 +4,55 @@
 {% block head %}
 {{super()}}
 <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .custom-padding{
         padding-top:20px;
     }
 </style>
 {%endblock%}
 {% block content %}
-    <div style="height: 100%;">
-      <div class="col-md-12">
+    <div style="max-width: 700px; min-height: 100%;">
+      <div class="col-md-8 px-3">
         <div class="d-flex align-items-center custom-padding">
-            <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black; font-size: 1.5rem;"></a>
-            <h4 class="mx-auto" style="text-decoration: none; color: black;">test recipe Name</h4>
+            <a class="fa-solid fa-angle-left" style="text-decoration: none; color: black; font-size: 1.5rem;" onclick="history.back()"></a>
+            <h4 class="mx-auto" style="text-decoration: none; color: black; text-align: center;">{{recipeDetails[0]}}</h4>
         </div>
         <div class="d-flex justify-content-center custom-padding">
-            <img width="250" src="https://www.allrecipes.com/thmb/gJ9I89B9iDeBvB1hikdlM9p-ACc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/233655-9f4eded039544eb68f0c796a6bd9578c.jpg">
+            <img width="250" src="{{recipeDetails[5]}}">
         </div>
         <div class="d-flex justify-content-around" style="margin-top: 20px;">
             <div style="padding-right: 20px;">
                 <h6>Serves:</h6>
-                enough for 1 pizza
+                {{recipeDetails[1]}}
             </div>
             <div>
                 <h6>Cooking Time:</h6>
-                2 days 1 hr 25 mins
+                {{recipeDetails[2]}}
             </div>
         </div>        
         <div class="custom-padding">
             <h2>Ingredients</h2>
+            <ul>
+                {% for i in ingredients%}
+                <li>{{i}}</li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="custom-padding">
             <h2>Directions</h2>
+            <ol>
+                {% for i in steps%}
+                <li>{{i}}</li>
+                {% endfor %}
+            </0l>
         </div>
       </div>
     </div>
